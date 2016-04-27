@@ -5,6 +5,7 @@ var tmsp = require("js-tmsp");
 var merkle = require("js-merkleeyes");
 var types = require("./types");
 var crypto = require("./crypto");
+var test = require("./test");
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -183,9 +184,6 @@ var validateInput = function(input, signBytes, cb) {
     cb({code:tmsp.CodeType.EncodingError, log:"Input signature must be 64 bytes long"});
     return false;
   }
-  console.log('pub: ' + input.pubKey.toBuffer());
-  console.log('sig: ' + input.signature.toBuffer());
-
   if (!crypto.verify(
         input.pubKey.toBuffer(),
         signBytes,
@@ -265,6 +263,9 @@ app.get('/devices/:id', function(req, res) {
 });
 
 app.listen(3001);
+
+// run test
+test.run(program.addr);
 
 console.log("autodapp: running");
 
