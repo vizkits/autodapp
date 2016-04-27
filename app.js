@@ -264,7 +264,7 @@ app.get('/devices/:id', function(req, res) {
   }
 });
 
-app.listen(3001, '0.0.0.0');
+app.listen(3001);
 
 console.log("autodapp: running");
 
