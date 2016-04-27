@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package types;
+
+//----------------------------------------
+// Tx
+
+message Tx {
+  repeated  Input           inputs          = 1;
+}
+
+message Input {
+            bytes           pubKey          = 1;
+            uint32          sequence        = 2;
+            float           latitude        = 3;
+            float           longitude       = 4;
+            float           temperature     = 5;
+            bytes           signature       = 6;
+}
+
+//----------------------------------------
+// Device
+
+message Device {
+            uint32          sequence        = 1;
+            float           latitude        = 2;
+            float           longitude       = 3;
+            float           temperature     = 4;
+}
