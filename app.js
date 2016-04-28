@@ -5,7 +5,6 @@ var tmsp = require("js-tmsp");
 var merkle = require("js-merkleeyes");
 var types = require("./types");
 var crypto = require("./crypto");
-var test = require("./test");
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -77,14 +76,12 @@ AutoDapp.prototype.checkTx = function(req, cb) {
     return;
   }
 
-  console.log('autodapp: check tx: OK');
-
   return cb({code:tmsp.CodeType_OK});
 };
 
 AutoDapp.prototype.commit = function(req, cb) {
   this.merkleClient.commit((hash) => {
-    console.log('autodapp: commit hash ' + hash);
+    console.log('autodapp: commit hash ' + hash.toString('hex'));
     cb({data: hash});
   });
 };
@@ -200,8 +197,6 @@ var getAllPubKeys = function(tx) {
 }
 
 var executeTx = function(tx, devMap, devices, cb) {
-  // execute transaction, while filling in devices
-  // with updated data in order of appearance in tx.
   for (var i = 0; i < tx.inputs.length; i++) {
     var input = tx.inputs[i];
     var dev = devMap[input.pubKey.toBinary()];
@@ -209,13 +204,7 @@ var executeTx = function(tx, devMap, devices, cb) {
       cb({code:tmsp.CodeType.UnknownAccount, log:"Input device does not exist"});
       return false;
     }
-    if (dev.sequence !== input.sequence) {
-      cb({code:tmsp.CodeType.BadNonce, log:"Invalid sequence"});
-      console.log("Invalid sequence");
-      return false;
-    }
-
-    dev.sequence++;
+    // update device info
     dev.latitude = input.latitude;
     dev.longitude = input.longitude;
     dev.temperature = input.temperature;
@@ -264,8 +253,8 @@ app.get('/devices/:id', function(req, res) {
 
 app.listen(3001);
 
-// run test
-test.run(program.addr);
+// run init test
+require("./helper").runTest(program.addr);
 
 console.log("autodapp: running");
 
