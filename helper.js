@@ -3,9 +3,9 @@ var tmsp = require("js-tmsp");
 var types = require("./types");
 var crypto = require("./crypto");
 
-var getDevice = function(seed) {
-  var device = crypto.deriveKeyPair(seed);
-  return device;
+var createKeyPair = function(seed) {
+  var keys = crypto.deriveKeyPair(seed);
+  return keys;
 }
 
 var input = function(device, info) {
@@ -64,8 +64,8 @@ var runTest = function(addr) {
   var status1b = {latitude:37.7938462, longitude:-122.394837, temperature:70};
   var status2a = {latitude:45.500618, longitude:-73.56778, temperature:65};
   var status2b = {latitude:45.500618, longitude:-73.56778, temperature:70};
-  var device1 = getDevice(seed1);
-  var device2 = getDevice(seed2);
+  var device1 = createKeyPair(seed1);
+  var device2 = createKeyPair(seed2);
 
   var cli = new tmsp.Client(addr || "tcp://127.0.0.1:46658");
 
@@ -85,7 +85,7 @@ var runTest = function(addr) {
 }
 
 module.exports = {
-  getDevice: getDevice,
+  createKeyPair: createKeyPair,
   input: input,
   tx: tx,
   runTest: runTest,
