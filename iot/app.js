@@ -16,12 +16,12 @@ var AutoDapp = function(merkleClient) {
 };
 
 AutoDapp.prototype.info = function(req, cb) {
-  return cb({data: "Auto Dapp v" + version});
+  return cb({data: "Auto IoT Dapp v" + version});
 };
 
 AutoDapp.prototype.setOption = function(req, cb) {
   console.log('autodapp: set option');
-  if (req.key === "init") {
+  if (req.key === "register") {
     var opts = JSON.parse(req.value);
     var seed = opts.seed;
     var lat = opts.status.latitude;

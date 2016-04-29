@@ -57,7 +57,7 @@ var checkTx = function(cli, tx, code, cb) {
 }
 
 var runTest = function(addr) {
-  // init two devices
+  // register two devices
   var seed1 = "1"; // use uuid to base64
   var seed2 = "2"; // use uuid to base64
   var status1a = {latitude:37.7938462, longitude:-122.394837, temperature:65};
@@ -70,8 +70,8 @@ var runTest = function(addr) {
   var cli = new tmsp.Client(addr || "tcp://127.0.0.1:46658");
 
   async.series([
-  (cb)=>{ setOption(cli, "init", JSON.stringify({seed:seed1, status:status1a}), cb); },
-  (cb)=>{ setOption(cli, "init", JSON.stringify({seed:seed2, status:status2a}), cb); },
+  (cb)=>{ setOption(cli, "register", JSON.stringify({seed:seed1, status:status1a}), cb); },
+  (cb)=>{ setOption(cli, "register", JSON.stringify({seed:seed2, status:status2a}), cb); },
   (cb)=>{ appendTx(cli, tx([input(device1, status1b)]), tmsp.CodeType.OK, cb); },
   (cb)=>{ checkTx(cli, tx([input(device1, status1b)]), tmsp.CodeType.OK, cb); },
   (cb)=>{ appendTx(cli, tx([input(device2, status2b)]), tmsp.CodeType.OK, cb); },
