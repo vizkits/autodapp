@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package types;
+
+//----------------------------------------
+// Tx
+
+message Tx {
+  repeated  Input           inputs          = 1;
+}
+
+message Input {
+            bytes           pubKey          = 1;
+            string          name            = 2;
+            string          email           = 3;
+            bytes           signature       = 5;
+}
+
+//----------------------------------------
+// User
+
+message User {
+            string          name            = 1;
+            string          email           = 2;
+}

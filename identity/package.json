@@ -1,0 +1,19 @@
+{
+  "name": "autodapp-identity",
+  "version": "0.0.1",
+  "description": "auto identity dapp",
+  "main": "app.js",
+  "author": "Alex Chien",
+  "dependencies": {
+    "async": "~1.5.2",
+    "body-parser": "~1.15.0",
+    "commander": "~2.9.0",
+    "express": "~4.13.4",
+    "js-merkleeyes": "~0.0.4",
+    "js-nacl": "~0.6.0",
+    "js-tmsp": "~0.0.11",
+    "js-wire": "~0.0.2",
+    "protobufjs": "~5.0.1",
+    "request": "~2.72.0"
+  }
+}
