@@ -1,7 +1,7 @@
 {
   "name": "autodapp",
   "version": "0.0.1",
-  "description": "autodesk dapp",
+  "description": "auto dapp",
   "main": "app.js",
   "dependencies": {
     "async": "~1.5.2",
