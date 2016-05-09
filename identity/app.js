@@ -49,14 +49,14 @@ AutoDapp.prototype.appendTx = function(req, cb) {
     return cb({code:tmsp.CodeType.EncodingError, log:''+err});
   }
 
-  this.loadUsers(getAllPubKeys(tx), (userMap) => {
+  this._loadUsers(getAllPubKeys(tx), (userMap) => {
     // execute transaction
     var users = [];
     if (!executeTx(tx, userMap, users, cb)) {
       return;
     }
     // save result
-    this.storeUsers(users);
+    this._storeUsers(users);
     return cb({code:tmsp.CodeType.OK});
   });
 };
@@ -71,8 +71,12 @@ AutoDapp.prototype.checkTx = function(req, cb) {
   }
 
   if (!validateTx(tx, cb)) {
+    console.log('autodapp: check tx: invalid');
     return;
   }
+
+  // workaround to add new legit users before tm rpc is available
+  this._addNewUser(tx);
 
   return cb({code:tmsp.CodeType_OK});
 };
@@ -92,10 +96,29 @@ AutoDapp.prototype.query = function(req, cb) {
   });
 };
 
-AutoDapp.prototype.loadUsers = function(pubKeys, loadUsersCb) {
+AutoDapp.prototype._addNewUser = function(tx) {
+  // check and add new legit user
+  for (var i = 0; i < tx.inputs.length; i++) {
+    var input = tx.inputs[i];
+    this.merkleClient.get(input.pubKey.toBuffer(), (userBytes) => {
+      if (userBytes.length === 0) {
+        this.merkleClient.set(
+          input.pubKey.toBuffer(),
+          new types.User({name:input.name, email:input.email}).encode().toBuffer(),
+          (res) => {
+            var logMsg = "New user name = " + input.name + ", email = " + input.email;
+            console.log(logMsg);
+          }
+        );
+      }
+    });
+  }
+};
+
+AutoDapp.prototype._loadUsers = function(pubKeys, loadUsersCb) {
   // load users in batch from merkleClient
   async.map(pubKeys, function(pubKeyBytes, cb) {
-    merkleClient.get(pubKeyBytes, (userBytes) => {
+    this.merkleClient.get(pubKeyBytes, (userBytes) => {
       if (userBytes.length === 0) {
         cb(null, null);
       } else {
@@ -118,7 +141,7 @@ AutoDapp.prototype.loadUsers = function(pubKeys, loadUsersCb) {
   });
 };
 
-AutoDapp.prototype.storeUsers = function(users) {
+AutoDapp.prototype._storeUsers = function(users) {
   // write in deterministic order
   for (var i = 0; i < users.length; i++) {
     var user = users[i];
@@ -164,7 +187,7 @@ var validateInput = function(input, signBytes, cb) {
   var validateEmail = function(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
-  }
+  };
 
   if (validateEmail(input.email) === false) {
     cb({code:tmsp.CodeType.EncodingError, log:"Input email is invalid"});
@@ -185,6 +208,7 @@ var validateInput = function(input, signBytes, cb) {
     cb({code:tmsp.CodeType.Unauthorized, log:"Invalid signature"});
     return false;
   }
+
   return true;
 };
 
@@ -247,10 +271,10 @@ app.get('/users/:id', function(req, res) {
   }
 });
 
-app.listen(3001);
+app.listen(3001); // use 3001 for mintnet only
 
 // run init test
-require("./helper").runTest(program.addr);
+//require("./helper").runTest(program.addr);
 
 console.log("autodapp: running");
 
