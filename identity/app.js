@@ -76,14 +76,14 @@ AutoDapp.prototype.checkTx = function(req, cb) {
   }
 
   // workaround to add new legit users before tm rpc is available
-  //this._addNewUser(tx);
+  this._addNewUser(tx);
 
   return cb({code:tmsp.CodeType_OK});
 };
 
 AutoDapp.prototype.commit = function(req, cb) {
   this.merkleClient.commit((hash) => {
-    console.log('autodapp: commit hash ' + hash.toString('hex'));
+    //console.log('autodapp: commit hash ' + hash.toString('hex'));
     cb({data: hash});
   });
 };
@@ -117,8 +117,9 @@ AutoDapp.prototype._addNewUser = function(tx) {
 
 AutoDapp.prototype._loadUsers = function(pubKeys, loadUsersCb) {
   // load users in batch from merkleClient
+  var that = this;
   async.map(pubKeys, function(pubKeyBytes, cb) {
-    this.merkleClient.get(pubKeyBytes, (userBytes) => {
+    that.merkleClient.get(pubKeyBytes, (userBytes) => {
       if (userBytes.length === 0) {
         cb(null, null);
       } else {
