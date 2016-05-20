@@ -76,7 +76,7 @@ AutoDapp.prototype.checkTx = function(req, cb) {
   }
 
   // workaround to add new legit users before tm rpc is available
-  this._addNewUser(tx);
+  //this._addNewUser(tx);
 
   return cb({code:tmsp.CodeType_OK});
 };
