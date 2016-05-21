@@ -97,6 +97,7 @@ AutoDapp.prototype.query = function(req, cb) {
 };
 
 AutoDapp.prototype._addNewUser = function(tx) {
+  console.log('autodapp: add new user');
   // check and add new legit user
   for (var i = 0; i < tx.inputs.length; i++) {
     var input = tx.inputs[i];
@@ -151,6 +152,7 @@ AutoDapp.prototype._storeUsers = function(users) {
 };
 
 var validateTx = function(tx, cb) {
+  console.log('autodapp: validate tx');
   if (tx.inputs.length === 0) {
     cb({code:tmsp.CodeType.EncodingError, log:"Tx.inputs.length cannot be 0"});
     return false;
