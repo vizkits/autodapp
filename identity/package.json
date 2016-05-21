@@ -9,9 +9,9 @@
     "body-parser": "~1.15.0",
     "commander": "~2.9.0",
     "express": "~4.13.4",
-    "js-merkleeyes": "~0.0.4",
+    "js-merkleeyes": "~0.0.5",
     "js-nacl": "~0.6.0",
-    "js-tmsp": "~0.0.11",
+    "js-tmsp": "~0.0.12",
     "js-wire": "~0.0.2",
     "protobufjs": "~5.0.1",
     "request": "~2.72.0"
